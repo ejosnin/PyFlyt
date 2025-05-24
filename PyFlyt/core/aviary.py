@@ -102,7 +102,7 @@ class Aviary(bullet_client.BulletClient):
 
         """
         super().__init__(p.GUI if render else p.DIRECT)
-        print("\033[A                             \033[A")
+        #print("\033[A                             \033[A")
 
         # set random state
         if seed and np_random:
