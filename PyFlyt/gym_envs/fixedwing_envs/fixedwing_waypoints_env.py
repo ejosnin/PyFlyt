@@ -28,24 +28,21 @@ class FixedwingWaypointsEnv(FixedwingBaseEnv):
         agent_hz (int): looprate of the agent to environment interaction.
         render_mode (None | Literal["human", "rgb_array"]): render_mode
         render_resolution (tuple[int, int]): render_resolution
-
     """
-
     def __init__(
         self,
         sparse_reward: bool = False,
         num_targets: int = 4,
         goal_reach_distance: float = 2.0,
         flight_mode: int = 0,
-        flight_dome_size: float = 100.0,
+        flight_dome_size: float = np.inf,
         max_duration_seconds: float = 120.0,
         angle_representation: Literal["euler", "quaternion"] = "quaternion",
         agent_hz: int = 30,
         render_mode: None | Literal["human", "rgb_array"] = None,
         render_resolution: tuple[int, int] = (480, 480),
-    ):
+        start_pos=np.array([[0.0, 0.0, 10.0]]),):
         """__init__.
-
         Args:
             sparse_reward (bool): whether to use sparse rewards or not.
             num_targets (int): number of waypoints in the environment.
@@ -60,7 +57,7 @@ class FixedwingWaypointsEnv(FixedwingBaseEnv):
 
         """
         super().__init__(
-            start_pos=np.array([[0.0, 0.0, 10.0]]),
+            start_pos=start_pos,
             flight_mode=flight_mode,
             flight_dome_size=flight_dome_size,
             max_duration_seconds=max_duration_seconds,
@@ -78,7 +75,7 @@ class FixedwingWaypointsEnv(FixedwingBaseEnv):
             goal_reach_distance=goal_reach_distance,
             goal_reach_angle=np.inf,
             flight_dome_size=flight_dome_size,
-            min_height=0.5,
+            min_height=20.,
             np_random=self.np_random,
         )
 
@@ -102,20 +99,16 @@ class FixedwingWaypointsEnv(FixedwingBaseEnv):
         self.sparse_reward = sparse_reward
 
     def reset(
-        self, *, seed: None | int = None, options: None | dict[str, Any] = dict()
-    ) -> tuple[dict[Literal["attitude", "target_deltas"], np.ndarray], dict]:
+        self, *, seed: None | int = None, options: None | dict[str, Any] = dict()) -> tuple[dict[Literal["attitude", "target_deltas"], np.ndarray], dict]:
         """reset.
-
         Args:
             seed: seed to pass to the base environment.
             options: None
-
         """
         super().begin_reset(seed, options)
         self.waypoints.reset(self.env, self.np_random)
         self.info["num_targets_reached"] = 0
         super().end_reset()
-
         return self.state, self.info
 
     def compute_state(self) -> None:
@@ -152,12 +145,12 @@ class FixedwingWaypointsEnv(FixedwingBaseEnv):
         elif self.angle_representation == 1:
             new_state["attitude"] = np.concatenate(
                 [
-                    ang_vel,
-                    quaternion,
-                    lin_vel,
-                    lin_pos,
-                    self.action,
-                    aux_state,
+                    ang_vel, #size 3
+                    quaternion, #size 4
+                    lin_vel, #size 3
+                    lin_pos, #size 3
+                    self.action,#size 4
+                    aux_state, #6
                 ],
                 axis=-1,
             )

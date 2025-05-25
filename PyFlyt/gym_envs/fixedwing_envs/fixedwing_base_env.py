@@ -28,7 +28,7 @@ class FixedwingBaseEnv(gymnasium.Env):
         angle_representation: Literal["euler", "quaternion"] = "quaternion",
         agent_hz: int = 30,
         render_mode: None | Literal["human", "rgb_array"] = None,
-        render_resolution: tuple[int, int] = (480, 480),
+        render_resolution: tuple[int, int] = (320, 320),
     ):
         """__init__.
 
@@ -113,7 +113,9 @@ class FixedwingBaseEnv(gymnasium.Env):
             options: None
 
         """
-        raise NotImplementedError
+        #raise NotImplementedError
+        
+        return self.state, self.info
 
     def close(self) -> None:
         """Disconnects the internal Aviary."""
@@ -162,6 +164,7 @@ class FixedwingBaseEnv(gymnasium.Env):
             start_pos=self.start_pos,
             start_orn=self.start_orn,
             drone_type="fixedwing",
+            world_scale = world_scale,
             render=self.render_mode == "human",
             drone_options=drone_options,
             np_random=self.np_random,
@@ -297,3 +300,4 @@ class FixedwingBaseEnv(gymnasium.Env):
         )
 
         return rgbaImg
+

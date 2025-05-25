@@ -1,20 +1,34 @@
-"""The Aviary class, the core of how PyFlyt handles UAVs in the PyBullet simulation environment."""
-
 from __future__ import annotations
+
+import gymnasium
+import numpy as np
+import pybullet as p
+#import pybullet
+from gymnasium import spaces
+#from PyFlyt.core.aviary import Aviary
+from PyFlyt.core.utils.compile_helpers import check_numpy
 
 import time
 from itertools import repeat
-from typing import Any, Callable, Sequence
+from typing import Any, Callable, Sequence, Literal
 from warnings import warn
 
-import numpy as np
-import pybullet as p
 import pybullet_data
 from pybullet_utils import bullet_client
-
 from PyFlyt.core.abstractions import DroneClass, WindFieldClass
-from PyFlyt.core.drones import Fixedwing, QuadX, Rocket
+from PyFlyt.core.drones import Rocket, Fixedwing, QuadX
+#from custompyflyt.fixedwing import Fixedwing
+#from custompyflyt.quadx import QuadX
+import random
+#from custompyflyt.waypoint_handler import WaypointHandler
+#import PyFlyt.gym_envs
 
+
+physics_hz = 240
+world_scale = 10
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+"""Base PyFlyt Environment for the Fixedwing model using the Gymnasim API."""
 DroneIndex = int
 
 
@@ -22,25 +36,10 @@ class AviaryInitException(Exception):
     """AviaryInitException."""
 
     def __init__(self, message: str) -> None:
-        """__init__.
-
-        Args:
-            message (str): message
-
-        Returns:
-            None:
-
-        """
         self.message = message
         super().__init__(self.message)
 
     def __str__(self) -> str:
-        """__str__.
-
-        Returns:
-            str:
-
-        """
         return f"Aviary Error: {self.message}"
 
 
@@ -76,8 +75,8 @@ class Aviary(bullet_client.BulletClient):
         wind_type: None | str | type[WindFieldClass] = None,
         wind_options: dict[str, Any] = {},
         render: bool = False,
-        physics_hz: int = 240,
-        world_scale: float = 1.0,
+        physics_hz: int = physics_hz,
+        world_scale: float = world_scale,
         seed: None | int = None,
         np_random: None | np.random.Generator = None,
     ):
@@ -102,7 +101,7 @@ class Aviary(bullet_client.BulletClient):
 
         """
         super().__init__(p.GUI if render else p.DIRECT)
-        #print("\033[A                             \033[A")
+        print("\033[A                             \033[A")
 
         # set random state
         if seed and np_random:
@@ -237,10 +236,12 @@ class Aviary(bullet_client.BulletClient):
         )
 
         # construct the world
-        self.planeId = self.loadURDF(
-            "plane.urdf", useFixedBase=True, globalScaling=self.world_scale
-        )
-
+        self.planeId = self.loadURDF("plane.urdf", useFixedBase=True, globalScaling=self.world_scale)
+        
+        if random.uniform(0, 1) >= 0.0:
+            self.planeId = self.loadURDF("samurai.urdf", useFixedBase=True, globalScaling=self.world_scale)
+        
+        
         # spawn drones
         self.drones: list[DroneClass] = []
         for start_pos, start_orn, drone_type, drone_options in zip(

@@ -29,8 +29,10 @@ class Fixedwing(DroneClass):
         use_gimbal: bool = False,
         camera_angle_degrees: int = 0,
         camera_FOV_degrees: int = 90,
-        camera_resolution: tuple[int, int] = (128, 128),
-        camera_position_offset: np.ndarray = np.array([-3.0, 0.0, 1.0]),
+        camera_resolution: tuple[int, int] = (2*128, 2*128),
+        
+        camera_position_offset: np.ndarray = np.array([-3, 0.0,1]),
+        #camera_position_offset: np.ndarray = np.array([-0.001, 0 ,0.]),
         camera_fps: None | int = None,
         starting_velocity: np.ndarray = np.array([20.0, 0.0, 0.0]),
     ):
@@ -64,6 +66,7 @@ class Fixedwing(DroneClass):
             model_dir=model_dir,
             drone_model=drone_model,
             np_random=np_random,
+            
         )
 
         # constants
@@ -140,8 +143,8 @@ class Fixedwing(DroneClass):
 
             # mapping for RPYT -> LeftAil, RightAil, HorStab, VertStab, MainWing, Motor
             # signs for each control surface when under assist
-            self.surface_assist_ids = np.array([0, 0, 1, 2, 1, 3])
-            self.surface_assist_signs = np.array([1.0, -1.0, 1.0, -1.0, -1.0, 1.0])
+            self.surface_assist_ids = np.array([0, 0, 1, 1, 2, 3])
+            self.surface_assist_signs = np.array([1.0, -1.0, 1.0, -1.0, 0.0, 1.0])
 
             # motor
             motor_params = all_params["motor_params"]

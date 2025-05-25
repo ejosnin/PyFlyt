@@ -1,7 +1,3 @@
-#TBS: decision transformer https://github.com/nikhilbarhate99/min-decision-transformer
-#look at https://lorenzopieri.com/rl_transformers/ and https://www.reddit.com/r/reinforcementlearning/comments/rpdi1h/decision_transformers_to_replace_conventional_rl/
-
-
 import pybullet_data
 from pybullet_utils import bullet_client
 from PyFlyt.core.abstractions import DroneClass, WindFieldClass
@@ -16,8 +12,8 @@ import time
 import numpy as np
 
 from PyFlyt.gym_envs.fixedwing_envs.fixedwing_waypoints_env import FixedwingWaypointsEnv
-#from custompyflyt.lib_quad import QuadXWaypointsEnv
-#from custompyflyt.lib_wing import FixedwingWaypointsEnv
+from PyFlyt.gym_envs.fixedwing_envs.fixedwing_waypoints_env import QuadXWaypointsEnv
+
 
 
 
