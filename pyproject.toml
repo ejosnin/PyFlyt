@@ -8,7 +8,7 @@ version = "0.29.0"
 authors = [
   { name="Jet", email="taijunjet@hotmail.com" },
 ]
-description = "UAV Flight Simulator Gymnasium Environments for Reinforcement Learning Research."
+description = "UAV Flight Simulator Gymnasium Environments for Reinforcement Learning Research. custom version for personal usage"
 readme = "readme.md"
 requires-python = ">=3.8"
 classifiers = [
@@ -41,9 +41,9 @@ PyFlyt = [
 ]
 
 [project.urls]
-Repository = "https://github.com/jjshoots/PyFlyt"
+Repository = "https://github.com/ejosnin/PyFlyt.git"
 Documentation = "https://jjshoots.github.io/PyFlyt/documentation.html"
-"Bug Report" = "https://github.com/jjshoots/PyFlyt/issues"
+"Bug Report" = "https://github.com/ejosnin/PyFlyt/issues"
 
 #######################################################################################
 # linters
